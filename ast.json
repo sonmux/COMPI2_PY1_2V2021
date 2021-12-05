@@ -1,0 +1,21 @@
+[
+  {
+    "tipo": "INSTR_DECLARACION",
+    "identificador": [
+      "z"
+    ],
+    "tipo_dato": "INT",
+    "valor": {
+      "tipo": "VAL_INT",
+      "valor": 4
+    }
+  },
+  {
+    "tipo": "INSTR_DECLARACION",
+    "identificador": [
+      "a"
+    ],
+    "tipo_dato": "INT",
+    "valor": null
+  }
+]
