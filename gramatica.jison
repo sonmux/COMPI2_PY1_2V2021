@@ -50,7 +50,7 @@
 
 
 [\'][a-zA-Z][\']            { yytext = yytext.substr(1,yyleng-2); return 'CHAR'; }
-\"[^\"]*\"                  { yytext = yytext.substr(1,yyleng-2); return 'STRING'; }
+\"[^\"]*\"                 { yytext = yytext.substr(1,yyleng-2); return 'STRING'; }
 [0-9]+("."[0-9]+)\b        return 'DECIMAL';
 //-?[0-9]+\b                  return 'ENTERO';
 [0-9]+\b                    return 'ENTERO';
@@ -130,7 +130,7 @@ aux_declaracion
 ;
 
 expr_declaracion_string
-	: expr_declaracion_string CONCAT expresion_declaracion_string   {$$ = instruccionesAPI.nuevoValor($1, $3, TIPO_OPERACION.CONCATENAR);}
+	: expr_declaracion_string CONCAT expr_declaracion_string   {$$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.CONCATENAR);}
 	| STRING    {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.STRING);}
 	//| CHAR  {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.CHAR);}
 	| expr_declaracion  {$$ = $1;}
@@ -158,4 +158,5 @@ int b
 int c,d
 int f = 0
 int f,d,s = 9
+nuevoValor
 */

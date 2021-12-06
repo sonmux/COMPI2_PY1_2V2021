@@ -131,23 +131,24 @@ function procesarExpresionNumerica(expresion, tablaDeSimbolos) {
     Evaluamos cada caso para resolver a un valor tipo cadena de acuerdo al tipo de operación.
 */
 function procesarExpresionCadena(expresion, tablaDeSimbolos) {
-    if(expresion.tipo === TIPO_OPERACION.CONCATENAR){
-        //es una operacion de concatenacion
-        //se realizan las operaciones antes de concatenar
-        //se llama la funcion de forma recursiva para resolver los valores de los operandos
-        const cadIzq = procesarExpresionCadena(expresion.operandoIzq, tablaDeSimbolos).valor; // se resuelve el operando izquierod
-        const cadDer = procesarExpresionCadena(expresion.operandoDer, tablaDeSimbolos).valor; // se resuelve el operando derecho
-        // se retorna el valor de la concatenacion
-        const res= cadIzq + cadDer;
-        return {valor: res, tipo: TIPO_DATO.STRING};
-    }else if (expresion.tipo === TIPO_VALOR.STRING){
-        //es una cadena
-        //solo se devuelve el valor obtenido por el parser
-        return {valor:expresion.valor, tipo: TIPO_DATO.STRING};
-    }else{
-        //es una expresion numerica
-        //se manda a llamar a la funcion que realiza las expresiones numericas
-        //retornamos el valor de la cadena
+    if (expresion.tipo === TIPO_OPERACION.CONCATENAR) {
+        // Es una operación de concatenación.
+        // En este caso necesitamos procesar los operandos antes de realizar la concatenación.
+        // Para esto invocamos (recursivamente) esta función para resolver los valores de los operandos.
+        const cadIzq = procesarExpresionCadena(expresion.operandoIzq, tablaDeSimbolos).valor;      // resolvemos el operando izquierdo.
+        const cadDer = procesarExpresionCadena(expresion.operandoDer, tablaDeSimbolos).valor;      // resolvemos el operando derecho.
+        // Retornamos el resultado de la operación de concatenación.
+        const res=cadIzq + cadDer;
+        return {valor: res, tipo: TIPO_DATO.STRING};   
+
+    } else if (expresion.tipo === TIPO_VALOR.STRING) {
+        // Es una cadena.
+        // En este caso únicamente retornamos el valor obtenido por el parser directamente.
+        return {valor: expresion.valor, tipo: TIPO_DATO.STRING };
+    } else {
+        // Es una epresión numérica.
+        // En este caso invocamos la función que se encarga de procesar las expresiones numéricas
+        // y retornamos su valor en cadena.
         return procesarExpresionNumerica(expresion, tablaDeSimbolos);
     }
 }

@@ -2,70 +2,41 @@
   {
     "tipo": "INSTR_DECLARACION_ASIGNACION",
     "identificador": [
-      "c"
+      "a"
     ],
-    "tipo_dato": "NUMERO",
+    "tipo_dato": "STRING",
     "expresionNumerica": {
-      "operandoIzq": {
-        "tipo": "VAL_NUMERO",
-        "valor": 4
-      },
-      "operandoDer": {
-        "tipo": "VAL_NUMERO",
-        "valor": 4
-      },
-      "tipo": "OP_SUMA"
+      "tipo": "VAL_STRING",
+      "valor": "hola"
     }
-  },
-  {
-    "tipo": "INSTR_DECLARACION",
-    "identificador": [
-      "d"
-    ],
-    "tipo_dato": "STRING",
-    "valor": null
-  },
-  {
-    "tipo": "INSTR_DECLARACION",
-    "identificador": [
-      "c"
-    ],
-    "tipo_dato": "NUMERO",
-    "valor": null
-  },
-  {
-    "tipo": "INSTR_DECLARACION",
-    "identificador": [
-      "c",
-      "f",
-      "g"
-    ],
-    "tipo_dato": "STRING",
-    "valor": null
   },
   {
     "tipo": "INSTR_DECLARACION_ASIGNACION",
     "identificador": [
-      "variable"
+      "b"
     ],
-    "tipo_dato": "NUMERO",
+    "tipo_dato": "STRING",
+    "expresionNumerica": {
+      "tipo": "VAL_STRING",
+      "valor": "mundo"
+    }
+  },
+  {
+    "tipo": "INSTR_DECLARACION_ASIGNACION",
+    "identificador": [
+      "d"
+    ],
+    "tipo_dato": "STRING",
     "expresionNumerica": {
       "operandoIzq": {
-        "operandoIzq": {
-          "tipo": "VAL_NUMERO",
-          "valor": 1
-        },
-        "operandoDer": {
-          "tipo": "VAL_NUMERO",
-          "valor": 6
-        },
-        "tipo": "OP_SUMA"
+        "tipo": "VAL_IDENTIFICADOR",
+        "valor": "a"
       },
       "operandoDer": {
         "tipo": "VAL_IDENTIFICADOR",
-        "valor": "c"
+        "valor": "b"
       },
-      "tipo": "OP_MULTIPLICACION"
+      "tipo": "OP_CONCATENAR"
     }
   }
 ]
