@@ -101,9 +101,9 @@ instruccion
 
 //--------------------COMIENZA LA GRAMATICA PARA LA 'DECLARACION'
 declaracion
-	: RINT aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.INT); }
+	: RINT aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.NUMERO); }
 	| RSTRING aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.STRING); }
-	| RDOUBLE aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.DOUBLE); }
+	| RDOUBLE aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.NUMERO); }
 	| RCHAR aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.CHAR); }
 ;
 
@@ -138,19 +138,24 @@ expr_declaracion_string
 
 expr_declaracion
 	: PARIZQ expr_declaracion PARDER    {$$ = $2;}
-	| MENOS expr_declaracion %prec UMENOS   {$$ = instruccionesAPI.nuevaOperacionUnitaria($2, TIPO_OPERACION.NEGATIVO);}
+	| MENOS expr_declaracion %prec UMINUS   {$$ = instruccionesAPI.nuevaOperacionUnitaria($2, TIPO_OPERACION.NEGATIVO);}
 	| expr_declaracion MAS expr_declaracion {$$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.SUMA);}
 	| expr_declaracion MENOS expr_declaracion   {$$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.RESTA);}
 	| expr_declaracion POR expr_declaracion {$$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.MULTIPLICACION);}
 	| expr_declaracion DIVIDIDO expr_declaracion    {$$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.DIVISION);}
-	| ENTERO    {$$ = instruccionesAPI.nuevoValor(Number($1), TIPO_VALOR.INT);}
-	| DECIMAL   {$$ = instruccionesAPI.nuevoValor(Number($1), TIPO_VALOR.DOUBLE);}
+	| ENTERO    {$$ = instruccionesAPI.nuevoValor(Number($1), TIPO_VALOR.NUMERO);}
+	| DECIMAL   {$$ = instruccionesAPI.nuevoValor(Number($1), TIPO_VALOR.NUMERO);}
 	| IDENTIFICADOR {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.IDENTIFICADOR);}
 	| CHAR  {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.CHAR);}
 ;
 
 fin
 	: PTCOMA
-	|
 ;
 
+/*
+int b
+int c,d
+int f = 0
+int f,d,s = 9
+*/

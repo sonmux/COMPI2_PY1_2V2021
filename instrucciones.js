@@ -1,7 +1,8 @@
 // constantes para los 'valores' que reconoce la gramatica
 const TIPO_VALOR = {
-    INT: 'VAL_INT',
-    DOUBLE: 'VAL_DOUBLE',
+    //INT: 'VAL_INT',
+    //DOUBLE: 'VAL_DOUBLE',
+    NUMERO: 'VAL_NUMERO',
     IDENTIFICADOR: 'VAL_IDENTIFICADOR',
     STRING: 'VAL_STRING',
     CHAR: 'VAL_CHAR'
@@ -34,7 +35,8 @@ const TIPO_OPERACION = {
 // constantes para los tipos de 'instrucciones' validas en la gramatica
 const TIPO_INSTRUCCION = {
     DECLARACION: 'INSTR_DECLARACION',
-    ASIGNACION: 'INSTR_ASIGNACION'
+    ASIGNACION: 'INSTR_ASIGNACION',
+    DECLARACION_ASIGNACION: 'INSTR_DECLARACION_ASIGNACION'
 }
 
 // constantes para los tipos de opcion en un switch
@@ -77,12 +79,36 @@ const instruccionesAPI = {
 
     // crea un nuevo objeto 'tipo declaracion simple' para declaraciones sin expresion
     nuevaDeclaracionSimple: function(identificador, tipo) {
-        return {
-            tipo: TIPO_INSTRUCCION.DECLARACION,
-            identificador: identificador[0],
-            tipo_dato: tipo,
-            valor: identificador[1]
+        if(identificador[1]!=null){
+            return {
+                tipo: TIPO_INSTRUCCION.DECLARACION_ASIGNACION,
+                identificador: identificador[0],
+                tipo_dato: tipo,
+                //valor: identificador[1],
+                expresionNumerica: identificador[1]
+            }
+        }else{
+            return {
+                tipo: TIPO_INSTRUCCION.DECLARACION,
+                identificador: identificador[0],
+                tipo_dato: tipo,
+                valor: identificador[1]
+            }
         }
+    },
+
+    // crea un nuevo objeto 'tipo declaracion' para poder asignar datos a la variables
+    nuevaAsignacion: function(identificador, expresionNumerica) {
+        return {
+            tipo: TIPO_INSTRUCCION.ASIGNACION,
+            identificador: identificador[0],
+            expresionNumerica: expresionNumerica[1]
+        }
+    },
+
+    // crea un objero de 'tipo operador' (+ , - , / , *) 
+    nuevoOperador: function(operador){
+        return operador;
     }
 
     // crea un nuevo objeto 'tipo declaracion expresion' para declaraciones con expresiones

@@ -1,21 +1,71 @@
 [
   {
-    "tipo": "INSTR_DECLARACION",
+    "tipo": "INSTR_DECLARACION_ASIGNACION",
     "identificador": [
-      "z"
+      "c"
     ],
-    "tipo_dato": "INT",
-    "valor": {
-      "tipo": "VAL_INT",
-      "valor": 4
+    "tipo_dato": "NUMERO",
+    "expresionNumerica": {
+      "operandoIzq": {
+        "tipo": "VAL_NUMERO",
+        "valor": 4
+      },
+      "operandoDer": {
+        "tipo": "VAL_NUMERO",
+        "valor": 4
+      },
+      "tipo": "OP_SUMA"
     }
   },
   {
     "tipo": "INSTR_DECLARACION",
     "identificador": [
-      "a"
+      "d"
     ],
-    "tipo_dato": "INT",
+    "tipo_dato": "STRING",
     "valor": null
+  },
+  {
+    "tipo": "INSTR_DECLARACION",
+    "identificador": [
+      "c"
+    ],
+    "tipo_dato": "NUMERO",
+    "valor": null
+  },
+  {
+    "tipo": "INSTR_DECLARACION",
+    "identificador": [
+      "c",
+      "f",
+      "g"
+    ],
+    "tipo_dato": "STRING",
+    "valor": null
+  },
+  {
+    "tipo": "INSTR_DECLARACION_ASIGNACION",
+    "identificador": [
+      "variable"
+    ],
+    "tipo_dato": "NUMERO",
+    "expresionNumerica": {
+      "operandoIzq": {
+        "operandoIzq": {
+          "tipo": "VAL_NUMERO",
+          "valor": 1
+        },
+        "operandoDer": {
+          "tipo": "VAL_NUMERO",
+          "valor": 6
+        },
+        "tipo": "OP_SUMA"
+      },
+      "operandoDer": {
+        "tipo": "VAL_IDENTIFICADOR",
+        "valor": "c"
+      },
+      "tipo": "OP_MULTIPLICACION"
+    }
   }
 ]

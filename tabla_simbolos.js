@@ -1,10 +1,11 @@
 // constantes para los tipos de datos
 const TIPO_DATO = {
-    INT: 'INT',
+    //INT: 'INT',
     STRING: 'STRING',
+    NUMERO: 'NUMERO',
     IDENTIFICADOR: 'IDENTIFICADOR',
     CHAR: 'CHAR',
-    DOUBLE: 'DOUBLE'
+    //DOUBLE: 'DOUBLE'
 }
 
 // funcion para crear objetos de 'tipo simbolo'
@@ -32,17 +33,18 @@ class TS {
    agregar(id, tipo) {
        const nuevoSimbolo = crearSimbolo(id, tipo);
        this._simbolos.push(nuevoSimbolo);
+       //console.log(this._simbolos);
    }
 
    /*
         funcion para actualizar el valor de un simbolo existente
         esta funcion se usa en la sentencia de asignacion
     */
-   actualizar(id, valor) { //aqui se validan los tipos
+    actualizar(id, valor) { //aqui se validan los tipos
        const simbolo = this._simbolos.filter(simbolo => simbolo.id === id)[0];
        if (simbolo) {
             if(simbolo.tipo === valor.tipo){
-                if(simbolo.tipo === TIPO_DATO.INT){
+                if(simbolo.tipo === TIPO_DATO.NUMERO){
                     if(valor.valor instanceof String){ // se convierte si es necesario
                         simbolo.valor = parseInt(valor.valor, 10);
                     }else{
@@ -65,11 +67,25 @@ class TS {
 
    // funcion para obtener el valor de un simbolo existente
    obtener(id) {
-       const simbolo = this._simbolos.filter(simbolo => simbolo.id === id)[0];
+        //console.log(this._simbolos);
+        const result = this._simbolos.filter(simbolo => simbolo.id[0] === id)[0];
 
-       if (simbolo) return simbolo; // se retorna el simbolo completo
-       else throw 'ERROR: variable: ' + id + ' no ha sido definida';
-   }
+        if (result) return result; //aqui devolvemos el simbolo completo
+        else throw 'ERROR: variable: ' + id + ' no ha sido definida';
+    }
+
+    existe(id){
+        
+        const result = this._simbolos.filter(simbolo => simbolo.id[0] === id)[0];
+
+        if (result) return true; //aqui devolvemos el simbolo completo
+        else return false;
+        
+    }
+
+    imprimirTS(){
+        console.log(this._simbolos);
+    }
 
    // funcion para obtener los simbolos
    get simbolos(){

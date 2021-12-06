@@ -26,11 +26,11 @@ try {
     return;
 }
 
-// se crea una tabla de simbolos GLOBAL para iniciar con el interprete
-const tsGolbal = new TS([]);
+// Creación de una tabla de simbolos GLOBAL para iniciar con el interprete
+const tsGlobal = new TS([]);
 
-// se procesan las instrucciones reconocidas en el AST
-procesarBloque(ast, tsGolbal);
+// Procesamos las instrucciones reconocidas en nuestro AST
+procesarBloque(ast, tsGlobal);
 
 //#region reconocimiento de instrucciones
 //-----------funcion principal encargada de recorrer las instrucciones en un bloque, identificarlas y procesarlas
@@ -40,7 +40,13 @@ function procesarBloque(instrucciones, tablaDeSimbolos) {
         if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION) {
             // se procesa la instruccion de declaracion
             procesarDeclaracion(instruccion, tablaDeSimbolos);
-        } else {
+        } else if(instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
+            // se procesa la instruccion de asignacion
+            procesarAsignacion(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_ASIGNACION){
+            // se procesa una declaracion con asignacion
+            procesarDeclaracionAsignacion(instruccion, tablaDeSimbolos);
+        }else {
             throw 'ERROR: tipo de instrucción no válido: ' + instruccion;
         }
     });
@@ -54,59 +60,63 @@ function procesarBloque(instrucciones, tablaDeSimbolos) {
     Evaluamos cada caso para resolver a un valor tipo número de acuerdo al tipo de operación.
 */
 
-function procesarExpresionNumerica(expresion, tablaDeSimbolos){
-    if(expresion.tipo === TIPO_OPERACION.NEGATIVO) {
-        //es un valor negativo
-        //se niega el valor del numero para que sea un negativo
-        const valor = procesarExpresionNumerica(expresion.operandoIzq, tablaDeSimbolos).valor //resolvemos el operando
-
-        //retornamos el valor negado
-        const res = valor * -1;
-        return {valor: res, tipo: TIPO_DATO.INT};
-    }else if(expresion.tipo === TIPO_OPERACION.SUMA || TIPO_OPERACION.RESTA || TIPO_OPERACION.MULTIPLICACION || TIPO_OPERACION.DIVISION) {
-        // es para una operacion aritmetica
-        // en este caso se procesan los operandos antes de realizar la operacion
-        // se llama recursivamente esta funcion para resolver los valores de los operandos
-        let valorIzq = procesarExpresionNumerica(expresion.operandoIzq, tablaDeSimbolos); // se resuelve el operando izquierdo
-        let valorDer = procesarExpresionNumerica(expresion.operandoDer, tablaDeSimbolos); // se resuelve el operando derecho
-        if(valorIzq.tipo!==TIPO_DATO.INT || valorDer.tipo!==TIPO_DATO.INT){
+function procesarExpresionNumerica(expresion, tablaDeSimbolos) {
+    if (expresion.tipo === TIPO_OPERACION.NEGATIVO) {
+        // Es un valor negado.
+        // En este caso necesitamos procesar el valor del operando para poder negar su valor.
+        // Para esto invocamos (recursivamente) esta función para sesolver el valor del operando.
+        const valor = procesarExpresionNumerica(expresion.operandoIzq, tablaDeSimbolos).valor;     // resolvemos el operando
+        
+        // Retornamos el valor negado.
+        const res= valor * -1;
+        return {valor: res, tipo: TIPO_DATO.NUMERO};
+    } else if (expresion.tipo === TIPO_OPERACION.SUMA 
+        || expresion.tipo === TIPO_OPERACION.RESTA
+        || expresion.tipo === TIPO_OPERACION.MULTIPLICACION
+        || expresion.tipo === TIPO_OPERACION.DIVISION) {
+        // Es una operación aritmética.
+        // En este caso necesitamos procesar los operandos antes de realizar la operación.
+        // Para esto incovacmos (recursivamente) esta función para resolver los valores de los operandos.
+        let valorIzq = procesarExpresionNumerica(expresion.operandoIzq, tablaDeSimbolos);      // resolvemos el operando izquierdo.
+        let valorDer = procesarExpresionNumerica(expresion.operandoDer, tablaDeSimbolos);      // resolvemos el operando derecho.
+        if(valorIzq.tipo!==TIPO_DATO.NUMERO || valorDer.tipo!==TIPO_DATO.NUMERO){
             throw 'ERROR: se esperaban expresiones numericas para ejecutar la: ' + expresion.tipo;
         }else{
-            valorIzq = valorIzq.valor;
-            valorDer = valorDer.valor;
+            valorIzq=valorIzq.valor;
+            valorDer=valorDer.valor;
         }
-
-        if(expresion.tipo === TIPO_OPERACION.SUMA){
-            const res = valorIzq + valorDer;
-            return {valor: res, tipo: TIPO_DATO.INT};
+        if (expresion.tipo === TIPO_OPERACION.SUMA){
+            const res= valorIzq + valorDer;
+            return {valor: res, tipo: TIPO_DATO.NUMERO };
         }
-        if(expresion.tipo === TIPO_OPERACION.resta){
-            const res = valorIzq - valorDer;
-            return {valor: res, tipo: TIPO_DATO.INT};
+        if (expresion.tipo === TIPO_OPERACION.RESTA) {
+            const res= valorIzq - valorDer;
+            return {valor: res, tipo: TIPO_DATO.NUMERO };
         }
-        if(expresion.tipo === TIPO_OPERACION.MULTIPLICACION){
-            const res = valorIzq * valorDer;
-            return {valor: res, tipo: TIPO_DATO.INT};
+        if (expresion.tipo === TIPO_OPERACION.MULTIPLICACION) {
+            const res= valorIzq * valorDer;
+            return {valor: res, tipo: TIPO_DATO.NUMERO };
         }
-        if(expresion.tipo === TIPO_OPERACION.DIVISION){
+        if (expresion.tipo === TIPO_OPERACION.DIVISION) {
             if(valorDer === 0){
                 throw 'ERROR: la division entre 0 da como resultado: '+valorIzq/valorDer;
             }else{
-                const res = valorIzq / valorDer;
-                return {valor: res, tipo: TIPO_DATO.INT};
+                const res= valorIzq / valorDer;
+                return {valor: res, tipo: TIPO_DATO.NUMERO };
             }
-            
-        }
-    }else if(expresion.tipo === TIPO_VALOR.INT){
-        // es un valor numerico
-        // se retorna el valor obtenido del parser directamente
-        return {valor: expresion.valor, tipo: TIPO_DATO.INT};
-    }else if(expresion.tipo === TIPO_VALOR.IDENTIFICADOR){
-        // es un identificador
-        // obtenemos el valor del identificador de la tabla de simbolos
+        };
+
+    } else if (expresion.tipo === TIPO_VALOR.NUMERO) {
+        // Es un valor numérico.
+        // En este caso únicamente retornamos el valor obtenido por el parser directamente.
+        return {valor: expresion.valor, tipo: TIPO_DATO.NUMERO };
+    } else if (expresion.tipo === TIPO_VALOR.IDENTIFICADOR) {
+        // Es un identificador.
+        // Obtenemos el valor de la tabla de simbolos
+        //onsole.log(expresion.valor);
         const sym = tablaDeSimbolos.obtener(expresion.valor);
         return {valor: sym.valor, tipo: sym.tipo};
-    }else{
+    } else {
         throw 'ERROR: expresión numérica no válida: ' + expresion;
     }
 }
@@ -147,5 +157,31 @@ function procesarExpresionCadena(expresion, tablaDeSimbolos) {
 
 //funcion encargada de procesar la instruccion de declaracion
 function procesarDeclaracion(instruccion, tablaDeSimbolos){
-    tablaDeSimbolos.agregar(instruccion.identificador, instruccion.tipo_dato);
+    instruccion.identificador.forEach(variable => {
+        if(!tablaDeSimbolos.existe(variable)){
+            tablaDeSimbolos.agregar([variable], instruccion.tipo_dato);
+        }else{
+            console.log('no se puede declarar la variable \''+ variable + '\' el nombre de esa variable ya esta en uso')
+        }
+    });
+}
+
+function procesarAsignacion(instruccion, tablaDeSimbolos) {
+    const valor = procesarExpresionCadena(instruccion.expresionNumerica, tablaDeSimbolos); //retorna el tipo y el valor
+    tablaDeSimbolos.actualizar(instruccion.identificador, valor);
+}
+
+function procesarDeclaracionAsignacion(instruccion, tablaDeSimbolos) {
+    //console.log(instruccion.tipo_dato);
+    if(!tablaDeSimbolos.existe(instruccion.identificador)){
+        tablaDeSimbolos.agregar(instruccion.identificador, instruccion.tipo_dato);
+        
+        //console.log(instruccion);
+        const valor = procesarExpresionCadena(instruccion.expresionNumerica, tablaDeSimbolos);
+        //console.log(valor);
+        tablaDeSimbolos.actualizar(instruccion.identificador, valor);
+        tablaDeSimbolos.imprimirTS();
+    }else{
+        console.log('no se puede declarar la variable \''+ variable + '\' el nombre de esa variable ya esta en uso')
+    }
 }

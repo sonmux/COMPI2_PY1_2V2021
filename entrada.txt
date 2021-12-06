@@ -1,2 +1,5 @@
-int z = 4;
-int a
+int c = 4+4;
+string d;
+int c;
+string c,f,g;
+int variable = (1+6)*c;
