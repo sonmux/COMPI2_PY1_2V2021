@@ -36,7 +36,6 @@ procesarBloque(ast, tsGlobal);
 //-----------funcion principal encargada de recorrer las instrucciones en un bloque, identificarlas y procesarlas
 function procesarBloque(instrucciones, tablaDeSimbolos) {
     instrucciones.forEach(instruccion => {
-        
         if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION) {
             // se procesa la instruccion de declaracion
             procesarDeclaracion(instruccion, tablaDeSimbolos);
@@ -46,6 +45,22 @@ function procesarBloque(instrucciones, tablaDeSimbolos) {
         }else if( instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_ASIGNACION){
             // se procesa una declaracion con asignacion
             procesarDeclaracionAsignacion(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.IF){
+            // se procesa una declaracion con asignacion
+            //console.log("llega1");
+            procesarIf(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.IF_ELSE){
+            // se procesa una declaracion con asignacion
+            procesarIfElse(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.PRINT){
+            // se procesa una declaracion con asignacion
+            procesarImprimir(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.PRINTLN){
+            // se procesa una declaracion con asignacion
+            procesarImprimirLN(instruccion, tablaDeSimbolos);
+        }else if( instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
+            // se procesa una declaracion con asignacion
+            procesarAsignacion(instruccion, tablaDeSimbolos);
         }else {
             throw 'ERROR: tipo de instrucción no válido: ' + instruccion;
         }
@@ -155,12 +170,65 @@ function procesarExpresionCadena(expresion, tablaDeSimbolos) {
 
 //#endregion
 
+//#region procesar expresiones logicas
+function procesarExpresionLogica(expresion, tablaDeSimbolos){
+    if(expresion.tipo === TIPO_OPERACION.AND){
+        const valorIzq = procesarExpresionRelacional(expresion.operandoIzq, tablaDeSimbolos);
+        const valorDer = procesarExpresionRelacional(expresion.operandoDer, tablaDeSimbolos);
+        return valorIzq && valorDer;
+    }
+
+    if(expresion.tipo === TIPO_OPERACION.OR){
+        const valorIzq = procesarExpresionRelacional(expresion.operandoIzq, tablaDeSimbolos);
+        const valorDer = procesarExpresionRelacional(expresion.operandoDer, tablaDeSimbolos);
+        return valorIzq || valorDer;
+    }
+
+    if(expresion.tipo === TIPO_OPERACION.NOT){
+        const valor = procesarExpresionRelacional(expresion.operandoIzq, tablaDeSimbolos);
+        return !valor; 
+    }
+
+    return procesarExpresionRelacional(expresion, tablaDeSimbolos);
+}
+
+//#endregion
+
+//#region procesar expresion relacional
+
+function procesarExpresionRelacional(expresion, tablaDeSimbolos) {
+    let valorIzq = procesarExpresionNumerica(expresion.operandoIzq, tablaDeSimbolos);
+    let valorDer = procesarExpresionNumerica(expresion.operandoDer, tablaDeSimbolos);
+    if(valorIzq.tipo!==TIPO_DATO.NUMERO || valorDer.tipo!==TIPO_DATO.NUMERO){
+        throw 'ERROR: se esperaban expresiones numericas para ejecutar la: ' + expresion.tipo;
+    }else {
+        valorIzq = valorIzq.valor;
+        valorDer = valorDer.valor;
+    }
+
+    if(expresion.tipo === TIPO_OPERACION.MAYOR_QUE){
+        return valorIzq > valorDer;
+    }else if(expresion.tipo === TIPO_OPERACION.MENOR_QUE){
+        return valorIzq < valorDer;
+    }else if(expresion.tipo === TIPO_OPERACION.MAYOR_IGUAL){
+        return valorIzq >= valorDer;
+    }else if(expresion.tipo === TIPO_OPERACION.MENOR_IGUAL){
+        return valorIzq <= valorDer;
+    }else if(expresion.tipo === TIPO_OPERACION.DOBLE_IGUAL){
+        return valorIzq === valorDer;
+    }else if(expresion.tipo === TIPO_OPERACION.NO_IGUAL){
+        return valorIzq !== valorDer;
+    }     
+
+}
+
+//#endregion
 
 //funcion encargada de procesar la instruccion de declaracion
 function procesarDeclaracion(instruccion, tablaDeSimbolos){
     instruccion.identificador.forEach(variable => {
         if(!tablaDeSimbolos.existe(variable)){
-            tablaDeSimbolos.agregar([variable], instruccion.tipo_dato);
+            tablaDeSimbolos.agregar(variable, instruccion.tipo_dato);
         }else{
             console.log('no se puede declarar la variable \''+ variable + '\' el nombre de esa variable ya esta en uso')
         }
@@ -168,21 +236,56 @@ function procesarDeclaracion(instruccion, tablaDeSimbolos){
 }
 
 function procesarAsignacion(instruccion, tablaDeSimbolos) {
-    const valor = procesarExpresionCadena(instruccion.expresionNumerica, tablaDeSimbolos); //retorna el tipo y el valor
-    tablaDeSimbolos.actualizar(instruccion.identificador, valor);
+    const valor = procesarExpresionCadena(instruccion.expresionNumerica, tablaDeSimbolos);
+    //console.log(valor);
+    //console.log(instruccion.identificador);
+    tablaDeSimbolos.actualizar(instruccion.identificador[0], valor);
+    //tablaDeSimbolos.imprimirTS();
 }
 
 function procesarDeclaracionAsignacion(instruccion, tablaDeSimbolos) {
     //console.log(instruccion.tipo_dato);
-    if(!tablaDeSimbolos.existe(instruccion.identificador)){
-        tablaDeSimbolos.agregar(instruccion.identificador, instruccion.tipo_dato);
+    if(!tablaDeSimbolos.existe(instruccion.identificador[0])){
+        tablaDeSimbolos.agregar(instruccion.identificador[0], instruccion.tipo_dato);
         
         //console.log(instruccion);
         const valor = procesarExpresionCadena(instruccion.expresionNumerica, tablaDeSimbolos);
-        //console.log(valor);
-        tablaDeSimbolos.actualizar(instruccion.identificador, valor);
-        tablaDeSimbolos.imprimirTS();
+        //console.log(instruccion.identificador);
+        tablaDeSimbolos.actualizar(instruccion.identificador[0], valor);
+        //tablaDeSimbolos.imprimirTS();
     }else{
-        console.log('no se puede declarar la variable \''+ variable + '\' el nombre de esa variable ya esta en uso')
+        console.log('no se puede declarar la variable \''+ instruccion.identificador[0] + '\' el nombre de esa variable ya esta en uso')
     }
+}
+
+function procesarIf(instruccion, tablaDeSimbolos) {
+    //console.log("llega2");
+    const valorCondicion = procesarExpresionLogica(instruccion.expresionLogica, tablaDeSimbolos);
+
+    if(valorCondicion) {
+        const tsIf = new TS(tablaDeSimbolos.simbolos);
+        procesarBloque(instruccion.instrucciones, tsIf);
+    }
+}
+
+function procesarIfElse(instruccion, tablaDeSimbolos){
+    const valorCondicion = procesarExpresionLogica(instruccion.expresionLogica, tablaDeSimbolos);
+
+    if(valorCondicion){
+        const tsIf = new TS(tablaDeSimbolos.simbolos);
+        procesarBloque(instruccion.instruccionesIfVerdadero, tsIf);
+    }else {
+        const tsElse = new TS(tablaDeSimbolos.simbolos);
+        procesarBloque(instruccion.instruccionesIfFalso, tsElse);
+    }
+}
+
+function procesarImprimir(instruccion, tablaDeSimbolos){
+    const cadena = procesarExpresionCadena(instruccion.expresionCadena,tablaDeSimbolos).valor;
+    console.log('> ' + cadena);
+}
+
+function procesarImprimirLN(instruccion, tablaDeSimbolos){
+    const cadena = procesarExpresionCadena(instruccion.expresionCadena,tablaDeSimbolos).valor;
+    console.log('> ' + cadena + '\n');
 }

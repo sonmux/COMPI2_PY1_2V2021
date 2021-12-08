@@ -21,7 +21,7 @@ const TIPO_OPERACION = {
     MAYOR_IGUAL: 'OP_MAYOR_IGUAL',
     MENOR_IGUAL: 'OP_MENOR_IGUAL',
     NO_IGUAL: 'OP_NO_IGUAL',
-    DOBLEIG: 'OP_DOBLEIG',
+    DOBLE_IGUAL: 'OP_DOBLEIG',
     AND: 'OP_AND',
     OR: 'OP_OR',
     NOT: 'OP_NOT',
@@ -36,7 +36,11 @@ const TIPO_OPERACION = {
 const TIPO_INSTRUCCION = {
     DECLARACION: 'INSTR_DECLARACION',
     ASIGNACION: 'INSTR_ASIGNACION',
-    DECLARACION_ASIGNACION: 'INSTR_DECLARACION_ASIGNACION'
+    DECLARACION_ASIGNACION: 'INSTR_DECLARACION_ASIGNACION',
+    IF: 'INSTR_IF',
+    IF_ELSE: 'INSTR_ELSE',
+    PRINT: 'PRINT',
+    PRINTLN: 'PRINTLN'
 }
 
 // constantes para los tipos de opcion en un switch
@@ -93,6 +97,12 @@ const instruccionesAPI = {
                 identificador: identificador[0],
                 tipo_dato: tipo,
                 valor: identificador[1]
+
+                /*tipo: TIPO_INSTRUCCION.DECLARACION_ASIGNACION,
+                identificador: identificador[0],
+                tipo_dato: tipo,
+                //valor: identificador[1],
+                expresionNumerica: identificador[1]*/
             }
         }
     },
@@ -101,14 +111,45 @@ const instruccionesAPI = {
     nuevaAsignacion: function(identificador, expresionNumerica) {
         return {
             tipo: TIPO_INSTRUCCION.ASIGNACION,
-            identificador: identificador[0],
-            expresionNumerica: expresionNumerica[1]
+            identificador: identificador,
+            expresionNumerica: expresionNumerica
         }
     },
 
     // crea un objero de 'tipo operador' (+ , - , / , *) 
     nuevoOperador: function(operador){
         return operador;
+    },
+
+    nuevoIf: function(expresionLogica, instrucciones) {
+        return {
+            tipo: TIPO_INSTRUCCION.IF,
+            expresionLogica: expresionLogica,
+            instrucciones: instrucciones
+        }
+    },
+
+    nuevoIfElse: function(expresionLogica, instruccionesIfVerdadero, instruccionesIfFalso){
+        return {
+            tipo: TIPO_INSTRUCCION.IF_ELSE,
+            expresionLogica: expresionLogica,
+            instruccionesIfVerdadero: instruccionesIfVerdadero,
+            instruccionesIfFalso: instruccionesIfFalso
+        }
+    },
+
+    nuevoImprimir: function(expresion){
+        return {
+            tipo: TIPO_INSTRUCCION.PRINT,
+            expresionCadena: expresion
+        }
+    },
+
+    nuevoImprimirLN: function(expresion){
+        return {
+            tipo: TIPO_INSTRUCCION.PRINTLN,
+            expresionCadena: expresion
+        }
     }
 
     // crea un nuevo objeto 'tipo declaracion expresion' para declaraciones con expresiones

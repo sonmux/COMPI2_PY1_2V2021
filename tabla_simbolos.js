@@ -41,6 +41,7 @@ class TS {
         esta funcion se usa en la sentencia de asignacion
     */
     actualizar(id, valor) { //aqui se validan los tipos
+        //console.log(id);
        const simbolo = this._simbolos.filter(simbolo => simbolo.id === id)[0];
        if (simbolo) {
             if(simbolo.tipo === valor.tipo){
@@ -68,7 +69,7 @@ class TS {
    // funcion para obtener el valor de un simbolo existente
    obtener(id) {
         //console.log(this._simbolos);
-        const result = this._simbolos.filter(simbolo => simbolo.id[0] === id)[0];
+        const result = this._simbolos.filter(simbolo => simbolo.id === id)[0];
 
         if (result) return result; //aqui devolvemos el simbolo completo
         else throw 'ERROR: variable: ' + id + ' no ha sido definida';
@@ -76,7 +77,7 @@ class TS {
 
     existe(id){
         
-        const result = this._simbolos.filter(simbolo => simbolo.id[0] === id)[0];
+        const result = this._simbolos.filter(simbolo => simbolo.id === id)[0];
 
         if (result) return true; //aqui devolvemos el simbolo completo
         else return false;

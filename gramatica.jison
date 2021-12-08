@@ -13,7 +13,10 @@
 "double"			return 'RDOUBLE';
 "char"			    return 'RCHAR';
 "null"  			return 'RNULL';
-
+"if" 	 			return 'RIF';
+"else"  			return 'RELSE';
+"print"  			return 'RPRINT';
+"println"  			return 'RPRINTLN';
 
 ":"					return 'DOSPTS';
 ";"					return 'PTCOMA';
@@ -97,6 +100,23 @@ instrucciones
 
 instruccion
 /*declaracion*/ : declaracion   {$$ = $1;}
+				| asignacion {$$ = $1;}
+				| if	{$$ = $1;}
+				| print { $$ = $1;}
+;
+
+print 
+	: RPRINT PARIZQ expr_declaracion_string PARDER fin { $$ = instruccionesAPI.nuevoImprimir($3); }
+	| RPRINTLN PARIZQ expr_declaracion_string PARDER fin { $$ = instruccionesAPI.nuevoImprimirLN($3); }
+;
+
+if 
+	: RIF PARIZQ expresion_logica PARDER LLAVIZQ instrucciones LLAVDER { $$ = instruccionesAPI.nuevoIf($3, $6);}
+	| RIF PARIZQ expresion_logica PARDER LLAVIZQ instrucciones LLAVDER RELSE LLAVIZQ instrucciones LLAVDER { $$ = instruccionesAPI.nuevoIfElse($3, $6, $10);}
+;
+
+listaInstrucciones
+	:	instrucciones { $$ = $1;} 
 ;
 
 //--------------------COMIENZA LA GRAMATICA PARA LA 'DECLARACION'
@@ -105,6 +125,10 @@ declaracion
 	| RSTRING aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.STRING); }
 	| RDOUBLE aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.NUMERO); }
 	| RCHAR aux_declaracion fin	{ $$ = instruccionesAPI.nuevaDeclaracionSimple($2, TIPO_DATO.CHAR); }
+;
+
+asignacion
+	: IDENTIFICADOR IGUAL expr_declaracion_string fin { $$ = instruccionesAPI.nuevaAsignacion([$1], $3); }
 ;
 
 /*tipo
@@ -147,6 +171,22 @@ expr_declaracion
 	| DECIMAL   {$$ = instruccionesAPI.nuevoValor(Number($1), TIPO_VALOR.NUMERO);}
 	| IDENTIFICADOR {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.IDENTIFICADOR);}
 	| CHAR  {$$ = instruccionesAPI.nuevoValor($1, TIPO_VALOR.CHAR);}
+;
+
+expresion_relacional
+	: expr_declaracion MAYQUE expr_declaracion	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.MAYOR_QUE); }
+	| expr_declaracion MENQUE expr_declaracion	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.MENOR_QUE); }
+	| expr_declaracion MAYIGQUE expr_declaracion	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.MAYOR_IGUAL); }
+	| expr_declaracion MENIGQUE expr_declaracion	 { $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.MENOR_IGUAL); }
+	| expr_declaracion_string DOBLEIG expr_declaracion_string	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.DOBLE_IGUAL); }
+	| expr_declaracion_string NOIG expr_declaracion_string	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.NO_IGUAL); }
+;
+
+expresion_logica
+	: expresion_relacional AND expresion_relacional	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.TIPO_OPERACION.AND); }
+	| expresion_relacional OR expresion_relacional	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.OR); }
+	| NOT expresion_relacional	{ $$ = instruccionesAPI.nuevaOperacionBinaria($1, $3, TIPO_OPERACION.NOT); }
+	| expresion_relacional	{ $$ = $1; }
 ;
 
 fin

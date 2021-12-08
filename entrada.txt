@@ -1,3 +1,32 @@
-string a = "hola";
+/*string a = "hola";
 string b = "mundo" ;
-string d = a&b;
+string d = a&b;*/
+
+int a,b,c,d;
+print("Valor default variable 0 = ");
+println(a);
+int edad = 20;
+print("Valor edad declarado 20 = ");
+println(edad);
+print("Valor edad asignado 30 = ");
+edad = 50;
+println(edad);
+println(1);
+//println(true);
+println("hola mundo");
+
+
+if(edad==20){
+    int edad = 25;
+    print("Valor edad declarado 25 = ");
+    println(edad);
+    print("Valor edad asignado 45 = ");
+    edad = 45;
+    println(edad);
+}else{
+    if(edad >= 40){
+        print("si entra");
+    }
+}
+
+print(edad);

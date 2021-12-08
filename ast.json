@@ -1,42 +1,187 @@
 [
   {
-    "tipo": "INSTR_DECLARACION_ASIGNACION",
+    "tipo": "INSTR_DECLARACION",
     "identificador": [
-      "a"
-    ],
-    "tipo_dato": "STRING",
-    "expresionNumerica": {
-      "tipo": "VAL_STRING",
-      "valor": "hola"
-    }
-  },
-  {
-    "tipo": "INSTR_DECLARACION_ASIGNACION",
-    "identificador": [
-      "b"
-    ],
-    "tipo_dato": "STRING",
-    "expresionNumerica": {
-      "tipo": "VAL_STRING",
-      "valor": "mundo"
-    }
-  },
-  {
-    "tipo": "INSTR_DECLARACION_ASIGNACION",
-    "identificador": [
+      "a",
+      "b",
+      "c",
       "d"
     ],
-    "tipo_dato": "STRING",
+    "tipo_dato": "NUMERO",
+    "valor": null
+  },
+  {
+    "tipo": "PRINT",
+    "expresionCadena": {
+      "tipo": "VAL_STRING",
+      "valor": "Valor default variable 0 = "
+    }
+  },
+  {
+    "tipo": "PRINTLN",
+    "expresionCadena": {
+      "tipo": "VAL_IDENTIFICADOR",
+      "valor": "a"
+    }
+  },
+  {
+    "tipo": "INSTR_DECLARACION_ASIGNACION",
+    "identificador": [
+      "edad"
+    ],
+    "tipo_dato": "NUMERO",
     "expresionNumerica": {
+      "tipo": "VAL_NUMERO",
+      "valor": 20
+    }
+  },
+  {
+    "tipo": "PRINT",
+    "expresionCadena": {
+      "tipo": "VAL_STRING",
+      "valor": "Valor edad declarado 20 = "
+    }
+  },
+  {
+    "tipo": "PRINTLN",
+    "expresionCadena": {
+      "tipo": "VAL_IDENTIFICADOR",
+      "valor": "edad"
+    }
+  },
+  {
+    "tipo": "PRINT",
+    "expresionCadena": {
+      "tipo": "VAL_STRING",
+      "valor": "Valor edad asignado 30 = "
+    }
+  },
+  {
+    "tipo": "INSTR_ASIGNACION",
+    "identificador": [
+      "edad"
+    ],
+    "expresionNumerica": {
+      "tipo": "VAL_NUMERO",
+      "valor": 50
+    }
+  },
+  {
+    "tipo": "PRINTLN",
+    "expresionCadena": {
+      "tipo": "VAL_IDENTIFICADOR",
+      "valor": "edad"
+    }
+  },
+  {
+    "tipo": "PRINTLN",
+    "expresionCadena": {
+      "tipo": "VAL_NUMERO",
+      "valor": 1
+    }
+  },
+  {
+    "tipo": "PRINTLN",
+    "expresionCadena": {
+      "tipo": "VAL_STRING",
+      "valor": "hola mundo"
+    }
+  },
+  {
+    "tipo": "INSTR_ELSE",
+    "expresionLogica": {
       "operandoIzq": {
         "tipo": "VAL_IDENTIFICADOR",
-        "valor": "a"
+        "valor": "edad"
       },
       "operandoDer": {
-        "tipo": "VAL_IDENTIFICADOR",
-        "valor": "b"
+        "tipo": "VAL_NUMERO",
+        "valor": 20
       },
-      "tipo": "OP_CONCATENAR"
+      "tipo": "OP_DOBLEIG"
+    },
+    "instruccionesIfVerdadero": [
+      {
+        "tipo": "INSTR_DECLARACION_ASIGNACION",
+        "identificador": [
+          "edad"
+        ],
+        "tipo_dato": "NUMERO",
+        "expresionNumerica": {
+          "tipo": "VAL_NUMERO",
+          "valor": 25
+        }
+      },
+      {
+        "tipo": "PRINT",
+        "expresionCadena": {
+          "tipo": "VAL_STRING",
+          "valor": "Valor edad declarado 25 = "
+        }
+      },
+      {
+        "tipo": "PRINTLN",
+        "expresionCadena": {
+          "tipo": "VAL_IDENTIFICADOR",
+          "valor": "edad"
+        }
+      },
+      {
+        "tipo": "PRINT",
+        "expresionCadena": {
+          "tipo": "VAL_STRING",
+          "valor": "Valor edad asignado 45 = "
+        }
+      },
+      {
+        "tipo": "INSTR_ASIGNACION",
+        "identificador": [
+          "edad"
+        ],
+        "expresionNumerica": {
+          "tipo": "VAL_NUMERO",
+          "valor": 45
+        }
+      },
+      {
+        "tipo": "PRINTLN",
+        "expresionCadena": {
+          "tipo": "VAL_IDENTIFICADOR",
+          "valor": "edad"
+        }
+      }
+    ],
+    "instruccionesIfFalso": [
+      {
+        "tipo": "INSTR_IF",
+        "expresionLogica": {
+          "operandoIzq": {
+            "tipo": "VAL_IDENTIFICADOR",
+            "valor": "edad"
+          },
+          "operandoDer": {
+            "tipo": "VAL_NUMERO",
+            "valor": 40
+          },
+          "tipo": "OP_MAYOR_IGUAL"
+        },
+        "instrucciones": [
+          {
+            "tipo": "PRINT",
+            "expresionCadena": {
+              "tipo": "VAL_STRING",
+              "valor": "si entra"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tipo": "PRINT",
+    "expresionCadena": {
+      "tipo": "VAL_IDENTIFICADOR",
+      "valor": "edad"
     }
   }
 ]
